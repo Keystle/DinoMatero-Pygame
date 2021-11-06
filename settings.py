@@ -1,6 +1,8 @@
-cantidad_vertical_losas = 16
-tamanio_losa = 16
-ampliacion_escala = 3
+CANTIDAD_LOSAS_VERTICALES = 16
+TAMANIO_LOSA = 16
 
-pantalla_alto = cantidad_vertical_losas * tamanio_losa * ampliacion_escala
-pantalla_ancho = 400 * ampliacion_escala
+
+AMPLIACION_ESCALA = 4
+
+PANTALLA_ALTO = 720
+PANTALLA_ANCHO = 1280
