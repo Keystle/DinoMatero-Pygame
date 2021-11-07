@@ -21,7 +21,7 @@ class Nivel:
                     y = fila_indice * TAMANIO_LOSA
 
                     if tipo == 'terreno':
-                        lista_losa_terreno = import_cut_graphics('./images/background/Tileset.png')
+                        lista_losa_terreno = import_cut_graphics('./images/background/Tileset64.png')
                         superficie_losa = lista_losa_terreno[int(val)]
                         sprite = StaticTile(TAMANIO_LOSA, x, y, superficie_losa)
                         grupo_sprites.add(sprite)

@@ -26,7 +26,7 @@ def moviemiento(keys):
     
 
 
-personaje = Jugador(200, 410, 64, 44)
+personaje = Jugador(200, 200, 64, 44)
 nivel_0 = Nivel(nivel_0,pantalla)
 ejecutar = True
 
