@@ -22,6 +22,9 @@ class Nivel:
         capa_arbol = importar_csv_plantilla(nivel_data['arbol'])
         self.arbol_sprites = self.crear_grupo_sprites(capa_arbol, "arbol")
 
+        capa_arbol2 = importar_csv_plantilla(nivel_data['arbol'])
+        self.arbol2_sprites = self.crear_grupo_sprites(capa_arbol2, "arbol")
+
         capa_arbusto = importar_csv_plantilla(nivel_data['arbusto'])
         self.arbusto_sprites = self.crear_grupo_sprites(
             capa_arbusto, "arbusto")
@@ -31,6 +34,9 @@ class Nivel:
 
         capa_muro = importar_csv_plantilla(nivel_data['muro'])
         self.muro_sprites = self.crear_grupo_sprites(capa_muro, "muro")
+        
+        capa_muro2 = importar_csv_plantilla(nivel_data['muro2'])
+        self.muro2_sprites = self.crear_grupo_sprites(capa_muro2, "muro2")
 
         #decoracion
         self.cielo = Cielo(8)
@@ -61,6 +67,12 @@ class Nivel:
                         sprite = StaticTile(TAMANIO_LOSA, x, y, superficie_losa)
                         grupo_sprites.add(sprite)
 
+                    if tipo == 'arbol2':
+                        lista_losa_arbol2 = import_cut_graphics('./images/background/Decors64.png')
+                        superficie_losa = lista_losa_arbol2[int(val)]
+                        sprite = StaticTile(TAMANIO_LOSA, x, y, superficie_losa)
+                        grupo_sprites.add(sprite)
+
                     if tipo == 'arbusto':
                         lista_losa_arbusto = import_cut_graphics('./images/background/Decors64.png')
                         superficie_losa = lista_losa_arbusto[int(val)]
@@ -73,11 +85,17 @@ class Nivel:
                         sprite = StaticTile(TAMANIO_LOSA, x, y, superficie_losa)
                         grupo_sprites.add(sprite)
 
-                    ''' if tipo == 'muro':
-                        lista_losa_muro = import_cut_graphics('./images/background/Tileset64.png')
+                    if tipo == 'muro2':
+                        lista_losa_muro2 = import_cut_graphics('./images/background/Tileset64.png')
+                        superficie_losa = lista_losa_muro2[int(val)]
+                        sprite = StaticTile(TAMANIO_LOSA, x, y, superficie_losa)
+                        grupo_sprites.add(sprite)
+                    
+                    if tipo == 'muro':
+                        lista_losa_muro = import_cut_graphics('./images/background/Decors64.png')
                         superficie_losa = lista_losa_muro[int(val)]
                         sprite = StaticTile(TAMANIO_LOSA, x, y, superficie_losa)
-                        grupo_sprites.add(sprite) '''
+                        grupo_sprites.add(sprite)
 
 
         return grupo_sprites
@@ -95,11 +113,17 @@ class Nivel:
 #         DECORACION
         self.cielo.draw(self.display_superficie,self.desplazamiento_mundo)
 
+        self.arbol2_sprites.draw(self.display_superficie)
+        self.arbol2_sprites.update(self.desplazamiento_mundo)
+        
         self.arbol_sprites.draw(self.display_superficie)
         self.arbol_sprites.update(self.desplazamiento_mundo)
 
-        ''' self.muro_sprites.update(self.desplazamiento_mundo)
-        self.muro_sprites.draw(self.display_superficie) '''
+        self.muro2_sprites.update(self.desplazamiento_mundo)
+        self.muro2_sprites.draw(self.display_superficie)
+        
+        self.muro_sprites.update(self.desplazamiento_mundo)
+        self.muro_sprites.draw(self.display_superficie)
 
         self.arbusto_sprites.draw(self.display_superficie)
         self.arbusto_sprites.update(self.desplazamiento_mundo)
