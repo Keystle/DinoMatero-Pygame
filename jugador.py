@@ -1,13 +1,15 @@
 import pygame
 from settings import *
 
-class Jugador(object):
+class Jugador(pygame.sprite.Sprite):
     def __init__(self, x, y, ancho, alto):
+        """ self.rect = self.image.get_rect(topleft = pos) """
         self.x = x
         self.y = y
         self.ancho = ancho
         self.alto = alto
         self.vel = 10
+        self.direccion = pygame.math.Vector2(0,0)
         self.estaSaltando = False
         self.izquierda = False
         self.derecha = False
@@ -38,15 +40,19 @@ class Jugador(object):
                        pygame.image.load("images/personaje/salto2.png"),
                       pygame.image.load("images/personaje/salto3.png")]
 
+        
+
     def move(self,keys):
         localX = self.x
-        if keys[pygame.K_LEFT] :
+        if keys[pygame.K_LEFT] | keys[pygame.K_a]:
+            self.direccion.x = 1
             self.x = self.x - self.vel
             self.izquierda = True
             self.derecha = False
            
 
-        elif keys[pygame.K_RIGHT] :
+        elif keys[pygame.K_RIGHT] | keys[pygame.K_d] :
+            self.direccion.x = -1
             self.x += self.vel
             self.izquierda = False
             self.derecha = True

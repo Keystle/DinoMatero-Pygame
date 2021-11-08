@@ -20,19 +20,16 @@ def update_fps():
 
 
 #FIN FPS SECCION
-fondo = pygame.image.load("./images/personaje/fondo1.png")
-COLOR_FONDO_CLIELO = (76, 131, 216)
 
 def dibujar(keys):
-    ''' pantalla.fill(COLOR_FONDO_CLIELO) '''
-    nivel_2.run(keys)
+    nivel_0.run(keys)
     pantalla.blit(update_fps(), (10,0))
     
 
 
 
 
-nivel_2 = Nivel(nivel_2,pantalla)
+nivel_0 = Nivel(nivel_0,pantalla)
 ejecutar = True
 
 while ejecutar:

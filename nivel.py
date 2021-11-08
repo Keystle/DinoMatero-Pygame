@@ -4,10 +4,13 @@ from soporte import import_cut_graphics, importar_csv_plantilla
 from tile import *
 from jugador import Jugador
 from decoracion import Cielo
+
 class Nivel:
     def __init__(self, nivel_data, superficie):
 #INSTANCIAMOS JUGADOR
         self.personaje = Jugador(200, 687, 64, 44)
+
+        #self.personaje = pygame.sprite.GroupSingle()
 
         self.display_superficie = superficie
         self.desplazamiento_mundo = 0
@@ -101,9 +104,27 @@ class Nivel:
         return grupo_sprites
 
     
-
+    """ def colision_horizontal(self): 
+        personaje = self.personaje.sprite
+        personaje.rect.x += personaje.direction.x * personaje.vel
+        self.personaje.get_rect()
     
-			
+    def scroll_horizontal(self):
+        personaje = self.personaje.sprite
+        personaje_x = personaje.rect.centerx
+        direccion_x = personaje.direccion.x
+
+        if personaje_x < PANTALLA_ANCHO / 4 and direccion_x < 0:
+            self.desplazamiento_mundo = 8
+            personaje.vel = 0
+        elif personaje_x > PANTALLA_ANCHO - (PANTALLA_ANCHO / 4) and direccion_x > 0:
+            self.desplazamiento_mundo.vel = -8
+            personaje.vel = 0
+        else:
+            self.desplazamiento_mundo = 0
+            personaje.vel = 8
+		 """
+
 
     def run(self,keys):
         #MOVIMIENTO DEL PERSONAJE
@@ -137,8 +158,12 @@ class Nivel:
         self.moneda_sprites.draw(self.display_superficie)
         self.moneda_sprites.update(self.desplazamiento_mundo)
 
+        #self.scroll_horizontal()
+
         #UPDATE JUGADOR
         self.personaje.draw(self.display_superficie)
+
+        #self.colision_horizontal()
 
         
         

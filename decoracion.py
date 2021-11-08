@@ -22,7 +22,7 @@ class Cielo:
     def draw(self, pantalla,movimiento):
             self.cielo_x += movimiento
             pantalla.blit(self.top, (0,0))
-            for i in range(0,5):
+            for i in range(0,7):
                 pantalla.blit(self.middle, (self.cielo_x*0.2+i*PANTALLA_ANCHO,0))
                 pantalla.blit(self.bottom, (self.cielo_x * 0.8+i*PANTALLA_ANCHO,0))
 
