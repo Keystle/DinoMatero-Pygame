@@ -2,7 +2,7 @@ import pygame, sys
 from pygame.locals import * 
 from settings import *
 from nivel import *
-from data_del_juego import nivel_0
+from data_del_juego import nivel_0, nivel_1, nivel_2
 from jugador import *
 
 pygame.init()
@@ -25,14 +25,14 @@ COLOR_FONDO_CLIELO = (76, 131, 216)
 
 def dibujar(keys):
     ''' pantalla.fill(COLOR_FONDO_CLIELO) '''
-    nivel_0.run(keys)
+    nivel_2.run(keys)
     pantalla.blit(update_fps(), (10,0))
     
 
 
 
 
-nivel_0 = Nivel(nivel_0,pantalla)
+nivel_2 = Nivel(nivel_2,pantalla)
 ejecutar = True
 
 while ejecutar:

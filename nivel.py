@@ -22,8 +22,8 @@ class Nivel:
         capa_arbol = importar_csv_plantilla(nivel_data['arbol'])
         self.arbol_sprites = self.crear_grupo_sprites(capa_arbol, "arbol")
 
-        capa_arbol2 = importar_csv_plantilla(nivel_data['arbol'])
-        self.arbol2_sprites = self.crear_grupo_sprites(capa_arbol2, "arbol")
+        capa_arbol2 = importar_csv_plantilla(nivel_data['arbol2'])
+        self.arbol2_sprites = self.crear_grupo_sprites(capa_arbol2, "arbol2")
 
         capa_arbusto = importar_csv_plantilla(nivel_data['arbusto'])
         self.arbusto_sprites = self.crear_grupo_sprites(
@@ -119,11 +119,11 @@ class Nivel:
         self.arbol_sprites.draw(self.display_superficie)
         self.arbol_sprites.update(self.desplazamiento_mundo)
 
-        self.muro2_sprites.update(self.desplazamiento_mundo)
         self.muro2_sprites.draw(self.display_superficie)
+        self.muro2_sprites.update(self.desplazamiento_mundo)
         
-        self.muro_sprites.update(self.desplazamiento_mundo)
         self.muro_sprites.draw(self.display_superficie)
+        self.muro_sprites.update(self.desplazamiento_mundo)
 
         self.arbusto_sprites.draw(self.display_superficie)
         self.arbusto_sprites.update(self.desplazamiento_mundo)
