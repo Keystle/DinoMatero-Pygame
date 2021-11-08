@@ -9,24 +9,29 @@ pygame.init()
 pantalla = pygame.display.set_mode((PANTALLA_ANCHO, PANTALLA_ALTO))
 pygame.display.set_caption('Jumping')
 
- 
 reloj = pygame.time.Clock()
+#  FPS SECCION
+font = pygame.font.SysFont("Arial", 32)
 
+def update_fps():
+	fps = str(int(reloj.get_fps()))
+	fps_text = font.render(fps, 1, pygame.Color("black"))
+	return fps_text
+
+
+#FIN FPS SECCION
 fondo = pygame.image.load("./images/personaje/fondo1.png")
 COLOR_FONDO_CLIELO = (76, 131, 216)
 
-def dibujar():
-    pantalla.fill(COLOR_FONDO_CLIELO)
-    nivel_0.run()
-    personaje.draw(pantalla)
-    pygame.display.update()
-
-def moviemiento(keys):
-    personaje.move(keys,PANTALLA_ANCHO,PANTALLA_ALTO,nivel_0)
+def dibujar(keys):
+    ''' pantalla.fill(COLOR_FONDO_CLIELO) '''
+    nivel_0.run(keys)
+    pantalla.blit(update_fps(), (10,0))
     
 
 
-personaje = Jugador(200, 200, 64, 44)
+
+
 nivel_0 = Nivel(nivel_0,pantalla)
 ejecutar = True
 
@@ -40,5 +45,8 @@ while ejecutar:
         
     ##Opcion tecla pulsada
     keys = pygame.key.get_pressed()
-    moviemiento(keys)
-    dibujar()
+    dibujar(keys)
+
+    pygame.display.update()
+    reloj.tick(30)
+

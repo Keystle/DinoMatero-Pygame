@@ -7,7 +7,7 @@ class Jugador(object):
         self.y = y
         self.ancho = ancho
         self.alto = alto
-        self.vel = 5
+        self.vel = 10
         self.estaSaltando = False
         self.izquierda = False
         self.derecha = False
@@ -35,22 +35,22 @@ class Jugador(object):
                                  ]
 
         self.salta = [pygame.image.load("images/personaje/salto1.png"),
-                      # pygame.image.load("imagenes/salto2.png"),
+                       pygame.image.load("images/personaje/salto2.png"),
                       pygame.image.load("images/personaje/salto3.png")]
 
-    def move(self,keys,pantalla_ancho,pantalla_alto,level):
-      
-        if keys[pygame.K_LEFT] and self.x >= 0:
+    def move(self,keys):
+        localX = self.x
+        if keys[pygame.K_LEFT] :
             self.x = self.x - self.vel
             self.izquierda = True
             self.derecha = False
-            level.move(self.vel)
+           
 
-        elif keys[pygame.K_RIGHT] and self.x < pantalla_ancho - self.vel - self.ancho:
+        elif keys[pygame.K_RIGHT] :
             self.x += self.vel
             self.izquierda = False
             self.derecha = True
-            level.move(-self.vel)
+           
 
         else:
             self.izquierda = False
@@ -68,33 +68,31 @@ class Jugador(object):
 
         else:
             if self.conteoSalto >= -10:
-                self.y -= (self.conteoSalto *
-                                abs(self.conteoSalto)) * 0.5
+                self.y -= (self.conteoSalto *abs(self.conteoSalto)) * 0.5
                 self.conteoSalto -= 1
 
             else:
                 self.conteoSalto = 10
                 self.estaSaltando = False
-    
+        return localX - self.x
  
     def draw(self, pantalla):
-        pygame.time.delay(50)
         if self.conteoCaminata + 1 >= 5:
             self.conteoCaminata = 0
         if self.izquierda:
             pantalla.blit(
-                self.caminarIzquierda[self.conteoCaminata // 1], (int(self.x), int(self.y)))
+                self.caminarIzquierda[self.conteoCaminata // 1], (PANTALLA_ANCHO/2,int(self.y)))
             self.conteoCaminata += 1
         elif self.derecha:
             pantalla.blit(
-                self.caminarDerecha[self.conteoCaminata // 1], (int(self.x), int(self.y)))
+                self.caminarDerecha[self.conteoCaminata // 1], (PANTALLA_ANCHO/2,int(self.y)))
             self.conteoCaminata += 1
-        elif self.salto + 1 >= 2:
+        elif self.salto:
             pantalla.blit(
-                self.salta[self.conteoCaminata // 1], (int(self.x), int(self.y)))
+                self.salta[self.conteoCaminata // 1], (PANTALLA_ANCHO/2,int(self.y)))
             self.conteoCaminata += 1
         else:
-            pantalla.blit(self.quieto, (int(self.x), int(self.y)))
+            pantalla.blit(self.quieto, (PANTALLA_ANCHO/2,int(self.y)))
         
        
 

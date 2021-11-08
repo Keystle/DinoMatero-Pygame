@@ -1,14 +1,12 @@
 import pygame 
 from soporte import import_folder
 from settings import AMPLIACION_ESCALA
-GRAY = (33,33,33)
+
 
 class Tile(pygame.sprite.Sprite):
 	def __init__(self,size,x,y):
 		super().__init__()
 		self.image = pygame.Surface((size,size))
-		
-        
 		self.rect = self.image.get_rect(topleft = (x,y))
 
 	def update(self,shift):
@@ -42,9 +40,10 @@ class Coin(AnimatedTile):
 		center_x = x + int(size / 2)
 		center_y = y + int(size / 2)
 		self.rect = self.image.get_rect(center = (center_x,center_y))
-
+		
+''' 
 class Palm(AnimatedTile):
 	def __init__(self,size,x,y,path,offset):
 		super().__init__(size,x,y,path)
 		offset_y = y - offset
-		self.rect.topleft = (x,offset_y)
+		self.rect.topleft = (x,offset_y) '''
