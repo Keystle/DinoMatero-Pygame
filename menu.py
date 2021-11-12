@@ -45,7 +45,7 @@ def instrucciones():
     mensaje_en_pantalla("", WHITE, 20, 420)
     pygame.display.update()
   
-    keyboard.wait()
+    time.sleep(5)
 
 
 ##################################################

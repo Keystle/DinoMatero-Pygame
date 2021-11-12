@@ -6,8 +6,12 @@ from tile import *
 from jugador import Jugador
 from decoracion import Cielo
 
+
 class Nivel:
-    def __init__(self, nivel_data, superficie):
+    def __init__(self, nivel_data, superficie, monedaJuego):
+        # INSTANCIAR MONEDA
+
+
 #INSTANCIAMOS JUGADOR
         #self.personaje = Jugador(200, 687, 64, 44)
 
@@ -16,8 +20,12 @@ class Nivel:
         self.jugadorSprite.add(self.jugador)
 
         self.display_superficie = superficie
+        self.suma_desplazada = 0
         self.x_actual=0
         self.desplazamiento_mundo = 0
+
+        self.monedas = monedaJuego
+        self.finNivel = False
 
         capa_terreno = importar_csv_plantilla(nivel_data['terreno'])
         self.terreno_sprites = self.crear_grupo_sprites(
@@ -48,6 +56,9 @@ class Nivel:
         #decoracion
         self.cielo = Cielo(8)
 
+    """ def change_coins(self,amount):
+    		self.coins += amount """
+
     def crear_grupo_sprites(self, layout, tipo):
         grupo_sprites = pygame.sprite.Group()
 
@@ -65,7 +76,7 @@ class Nivel:
 
 
                     if tipo == 'moneda':
-                        sprite = Coin(TAMANIO_LOSA,x,y,'./images/items/Gold_Coin')
+                        sprite = Coin(TAMANIO_LOSA,x,y,'./images/items/Gold_Coin',50)
                         grupo_sprites.add(sprite)
 
                     if tipo == 'arbol':
@@ -116,9 +127,11 @@ class Nivel:
         
         if jugador_x < PANTALLA_ANCHO/4 and direccion_x < 0:
             self.desplazamiento_mundo=8
+           
             self.jugador.vel=0
         elif jugador_x > PANTALLA_ANCHO - (PANTALLA_ANCHO/2) and direccion_x > 0:
             self.desplazamiento_mundo=-8
+            
             self.jugador.vel=0
         else:
             self.desplazamiento_mundo=0
@@ -127,7 +140,7 @@ class Nivel:
     def colision_horizontal(self): 
         jugador_sprite = self.jugadorSprite.sprite
         
-
+    
         for sprite in self.terreno_sprites.sprites():
             if sprite.rect.colliderect(jugador_sprite.rect):
                 if self.jugador.direccion.x < 0:
@@ -159,14 +172,37 @@ class Nivel:
                     jugador_sprite.rect.top = sprite.rect.bottom
                     self.jugador.direccion.y=0
                     self.jugador.sobre_el_techo = True
+
         if self.jugador.sobre_el_suelo and self.jugador.direccion.y<0 or self.jugador.direccion.y > 1:
             self.jugador.sobre_el_suelo=False
         if self.jugador.sobre_el_techo and self.jugador.direccion.y > 0:
             self.jugador.sobre_el_techo=False
+
+    def colision_monedas(self):
+        for monedita in self.moneda_sprites.sprites():
+            if monedita.rect.colliderect(self.jugadorSprite.sprite.rect):
+                self.monedas = self.monedas +1
+                self.moneda_sprites.remove(monedita)
+                print(self.monedas)
+                # self.restart_jugador()
+                # self.change_coins.change_coins()
+
+    def colision_fin_nivel(self):
+        for fin_nivel in self.cueva_sprites.sprites():
+            if fin_nivel.rect.colliderect(self.jugadorSprite.sprite.rect):
+                self.finNivel = True
+        # colisionMoneda = pygame.sprite.spritecollide(self.jugadorSprite.sprite,self.moneda_sprites,True)
+        # if colisionMoneda:
+        #     for coin in colisionMoneda:
+        #         self.change_coins(coin.value)
+  
+    def restart_jugador(self):
+   
+        self.jugadorSprite.sprite.rect.y = 0
+        self.jugadorSprite.sprite.rect.x = 500 
         
 
-
-    def run(self,keys):
+    def run(self):
         #MOVIMIENTO DEL PERSONAJE
         self.desplazamiento_x()
 
@@ -199,13 +235,17 @@ class Nivel:
         self.moneda_sprites.update(self.desplazamiento_mundo)
 
         # TESTING
-        for sprite in self.terreno_sprites.sprites():
-            pygame.draw.rect(self.display_superficie,(255, 0, 0), sprite,4 )
+        # for sprite in self.terreno_sprites.sprites():
+        #     pygame.draw.rect(self.display_superficie,(255, 0, 0), sprite,4 )
+        # for sprite in self.moneda_sprites.sprites():
+        #     pygame.draw.rect(self.display_superficie,(255, 0, 0), sprite,4 )
         # FIN TESTING
 
         #UPDATE JUGADOR
         self.colision_horizontal()
         self.colision_vertical()
+        self.colision_monedas()
+        self.colision_fin_nivel()
         self.jugadorSprite.draw(self.display_superficie)
         self.jugadorSprite.update()
     
