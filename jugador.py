@@ -16,34 +16,40 @@ class Jugador(pygame.sprite.Sprite):
         self.salto = False
         self.conteoCaminata = 0
         self.conteoSalto = 10
+        self.gravedad = 1
+
+        self.image = pygame.Surface((32,64))
+        self.image.fill("red")
+        self.rect = self.image.get_rect(x,y)
         # Cargamos listas y variables con la referencia a nuestro sprites
-        self.quieto = pygame.image.load("images/personaje/personaje_quieto.png")
+        # self.quieto = pygame.image.load("images/personaje/personaje_quieto.png")
 
-        self.caminarDerecha = [pygame.image.load("images/personaje/run1.png"),
-                               pygame.image.load("images/personaje/run2.png"),
-                               pygame.image.load("images/personaje/run3.png"),
-                               pygame.image.load("images/personaje/run4.png"),
-                               pygame.image.load("images/personaje/run5.png"),
-                               ]
-        self.caminarIzquierda = [pygame.image.load("images/personaje/izq1.png"),
-                                 pygame.image.load(
-                                     "images/personaje/izq2.png"),
-                                 pygame.image.load(
-                                     "images/personaje/izq3.png"),
-                                 pygame.image.load(
-                                     "images/personaje/izq4.png"),
-                                 pygame.image.load(
-                                     "images/personaje/izq5.png"),
-                                 ]
+        # self.caminarDerecha = [pygame.image.load("images/personaje/run1.png"),
+        #                        pygame.image.load("images/personaje/run2.png"),
+        #                        pygame.image.load("images/personaje/run3.png"),
+        #                        pygame.image.load("images/personaje/run4.png"),
+        #                        pygame.image.load("images/personaje/run5.png"),
+        #                        ]
+        # self.caminarIzquierda = [pygame.image.load("images/personaje/izq1.png"),
+        #                          pygame.image.load(
+        #                              "images/personaje/izq2.png"),
+        #                          pygame.image.load(
+        #                              "images/personaje/izq3.png"),
+        #                          pygame.image.load(
+        #                              "images/personaje/izq4.png"),
+        #                          pygame.image.load(
+        #                              "images/personaje/izq5.png"),
+        #                          ]
 
-        self.salta = [pygame.image.load("images/personaje/salto1.png"),
-                       pygame.image.load("images/personaje/salto2.png"),
-                      pygame.image.load("images/personaje/salto3.png")]
+        # self.salta = [pygame.image.load("images/personaje/salto1.png"),
+        #                pygame.image.load("images/personaje/salto2.png"),
+        #               pygame.image.load("images/personaje/salto3.png")]
 
         
 
-    def move(self,keys):
+    def move(self,keys=pygame.key.get_pressed()):
         localX = self.x
+
         if keys[pygame.K_LEFT] | keys[pygame.K_a]:
             self.direccion.x = 1
             self.x = self.x - self.vel
@@ -83,22 +89,28 @@ class Jugador(pygame.sprite.Sprite):
         return localX - self.x
  
     def draw(self, pantalla):
-        if self.conteoCaminata + 1 >= 5:
-            self.conteoCaminata = 0
-        if self.izquierda:
-            pantalla.blit(
-                self.caminarIzquierda[self.conteoCaminata // 1], (PANTALLA_ANCHO/2,int(self.y)))
-            self.conteoCaminata += 1
-        elif self.derecha:
-            pantalla.blit(
-                self.caminarDerecha[self.conteoCaminata // 1], (PANTALLA_ANCHO/2,int(self.y)))
-            self.conteoCaminata += 1
-        elif self.salto:
-            pantalla.blit(
-                self.salta[self.conteoCaminata // 1], (PANTALLA_ANCHO/2,int(self.y)))
-            self.conteoCaminata += 1
-        else:
-            pantalla.blit(self.quieto, (PANTALLA_ANCHO/2,int(self.y)))
-        
+        # if self.conteoCaminata + 1 >= 5:
+        #     self.conteoCaminata = 0
+        # if self.izquierda:
+        #     pantalla.blit(
+        #         self.caminarIzquierda[self.conteoCaminata // 1], (int(self.x),int(self.y)))
+        #     self.conteoCaminata += 1
+        # elif self.derecha:
+        #     pantalla.blit(
+        #         self.caminarDerecha[self.conteoCaminata // 1], (int(self.x),int(self.y)))
+        #     self.conteoCaminata += 1
+        # elif self.salto:
+        #     pantalla.blit(
+        #         self.salta[self.conteoCaminata // 1], (int(self.x),int(self.y)))
+        #     self.conteoCaminata += 1
+        # else:
+        #     pantalla.blit(self.quieto, (int(self.x),int(self.y)))
+        pantalla.blit()
        
-
+    def aplicar_gravedad(self):
+        self.direccion.y += self.gravedad
+        self.rect.y += self.direccion.y
+    
+    def actualizar(self):
+        self.move()
+        self.rect.x += self.direccion.x*self.vel

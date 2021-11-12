@@ -8,9 +8,9 @@ from decoracion import Cielo
 class Nivel:
     def __init__(self, nivel_data, superficie):
 #INSTANCIAMOS JUGADOR
-        self.personaje = Jugador(200, 687, 64, 44)
+        #self.personaje = Jugador(200, 687, 64, 44)
 
-        #self.personaje = pygame.sprite.GroupSingle()
+        self.personaje = pygame.sprite.GroupSingle()
 
         self.display_superficie = superficie
         self.desplazamiento_mundo = 0
@@ -104,7 +104,7 @@ class Nivel:
         return grupo_sprites
 
     
-    """ def colision_horizontal(self): 
+    def colision_horizontal(self): 
         personaje = self.personaje.sprite
         personaje.rect.x += personaje.direction.x * personaje.vel
         self.personaje.get_rect()
@@ -123,7 +123,7 @@ class Nivel:
         else:
             self.desplazamiento_mundo = 0
             personaje.vel = 8
-		 """
+		 
 
 
     def run(self,keys):
