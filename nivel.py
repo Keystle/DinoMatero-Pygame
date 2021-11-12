@@ -1,4 +1,5 @@
 import pygame
+from pygame.draw import rect
 from settings import TAMANIO_LOSA, AMPLIACION_ESCALA,PANTALLA_ALTO,PANTALLA_ANCHO
 from soporte import import_cut_graphics, importar_csv_plantilla
 from tile import *
@@ -10,9 +11,12 @@ class Nivel:
 #INSTANCIAMOS JUGADOR
         #self.personaje = Jugador(200, 687, 64, 44)
 
-        self.personaje = pygame.sprite.GroupSingle()
+        self.jugadorSprite = pygame.sprite.GroupSingle()
+        self.jugador = Jugador((500,0))
+        self.jugadorSprite.add(self.jugador)
 
         self.display_superficie = superficie
+        self.x_actual=0
         self.desplazamiento_mundo = 0
 
         capa_terreno = importar_csv_plantilla(nivel_data['terreno'])
@@ -103,32 +107,68 @@ class Nivel:
 
         return grupo_sprites
 
-    
-    def colision_horizontal(self): 
-        personaje = self.personaje.sprite
-        personaje.rect.x += personaje.direction.x * personaje.vel
-        self.personaje.get_rect()
-    
-    def scroll_horizontal(self):
-        personaje = self.personaje.sprite
-        personaje_x = personaje.rect.centerx
-        direccion_x = personaje.direccion.x
+    def desplazamiento_x(self):
+        jugador = self.jugadorSprite.sprite
+        jugador_x = jugador.rect.centerx
+        direccion_x = self.jugador.direccion.x
 
-        if personaje_x < PANTALLA_ANCHO / 4 and direccion_x < 0:
-            self.desplazamiento_mundo = 8
-            personaje.vel = 0
-        elif personaje_x > PANTALLA_ANCHO - (PANTALLA_ANCHO / 4) and direccion_x > 0:
-            self.desplazamiento_mundo.vel = -8
-            personaje.vel = 0
+        self.jugador.rect.x += self.jugador.direccion.x * self.jugador.vel
+        
+        if jugador_x < PANTALLA_ANCHO/4 and direccion_x < 0:
+            self.desplazamiento_mundo=8
+            self.jugador.vel=0
+        elif jugador_x > PANTALLA_ANCHO - (PANTALLA_ANCHO/2) and direccion_x > 0:
+            self.desplazamiento_mundo=-8
+            self.jugador.vel=0
         else:
-            self.desplazamiento_mundo = 0
-            personaje.vel = 8
-		 
+            self.desplazamiento_mundo=0
+            self.jugador.vel=10
+
+    def colision_horizontal(self): 
+        jugador_sprite = self.jugadorSprite.sprite
+        
+
+        for sprite in self.terreno_sprites.sprites():
+            if sprite.rect.colliderect(jugador_sprite.rect):
+                if self.jugador.direccion.x < 0:
+                    jugador_sprite.rect.left = sprite.rect.right
+                    self.jugador.sobre_izquierda=True
+                    self.x_actual = jugador_sprite.rect.left
+                elif self.jugador.direccion.x > 0:
+                    jugador_sprite.rect.right = sprite.rect.left
+                    self.jugador.sobre_derecha=True
+                    self.x_actual = jugador_sprite.rect.right
+
+        if self.jugador.sobre_izquierda and (jugador_sprite.rect.left < self.x_actual or self.jugador.direccion.x >= 0):
+            self.jugador.sobre_izquierda = False
+
+        if self.jugador.sobre_derecha and (jugador_sprite.rect.right > self.x_actual or self.jugador.direccion.x <= 0):
+            self.jugador.sobre_derecha = False
+    
+    def colision_vertical(self):
+        jugador_sprite = self.jugadorSprite.sprite
+
+        self.jugador.aplicar_gravedad()
+        for sprite in self.terreno_sprites.sprites():
+            if sprite.rect.colliderect(jugador_sprite.rect):
+                if self.jugador.direccion.y > 0:
+                    jugador_sprite.rect.bottom = sprite.rect.top
+                    self.jugador.direccion.y=0
+                    self.jugador.sobre_el_suelo = True
+                elif self.jugador.direccion.y < 0:
+                    jugador_sprite.rect.top = sprite.rect.bottom
+                    self.jugador.direccion.y=0
+                    self.jugador.sobre_el_techo = True
+        if self.jugador.sobre_el_suelo and self.jugador.direccion.y<0 or self.jugador.direccion.y > 1:
+            self.jugador.sobre_el_suelo=False
+        if self.jugador.sobre_el_techo and self.jugador.direccion.y > 0:
+            self.jugador.sobre_el_techo=False
+        
 
 
     def run(self,keys):
         #MOVIMIENTO DEL PERSONAJE
-        self.desplazamiento_mundo = self.personaje.move(keys)
+        self.desplazamiento_x()
 
 
 #         DECORACION
@@ -158,14 +198,14 @@ class Nivel:
         self.moneda_sprites.draw(self.display_superficie)
         self.moneda_sprites.update(self.desplazamiento_mundo)
 
-        #self.scroll_horizontal()
+        # TESTING
+        for sprite in self.terreno_sprites.sprites():
+            pygame.draw.rect(self.display_superficie,(255, 0, 0), sprite,4 )
+        # FIN TESTING
 
         #UPDATE JUGADOR
-        self.personaje.draw(self.display_superficie)
-
-        #self.colision_horizontal()
-
-        
-        
-    
+        self.colision_horizontal()
+        self.colision_vertical()
+        self.jugadorSprite.draw(self.display_superficie)
+        self.jugadorSprite.update()
     

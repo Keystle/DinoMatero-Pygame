@@ -1,94 +1,99 @@
 import pygame
 from settings import *
-
+from soporte import import_folder
 class Jugador(pygame.sprite.Sprite):
-    def __init__(self, x, y, ancho, alto):
-        """ self.rect = self.image.get_rect(topleft = pos) """
-        self.x = x
-        self.y = y
-        self.ancho = ancho
-        self.alto = alto
-        self.vel = 10
-        self.direccion = pygame.math.Vector2(0,0)
-        self.estaSaltando = False
-        self.izquierda = False
-        self.derecha = False
-        self.salto = False
-        self.conteoCaminata = 0
-        self.conteoSalto = 10
-        self.gravedad = 1
-
-        self.image = pygame.Surface((32,64))
-        self.image.fill("red")
-        self.rect = self.image.get_rect(x,y)
-        # Cargamos listas y variables con la referencia a nuestro sprites
-        # self.quieto = pygame.image.load("images/personaje/personaje_quieto.png")
-
-        # self.caminarDerecha = [pygame.image.load("images/personaje/run1.png"),
-        #                        pygame.image.load("images/personaje/run2.png"),
-        #                        pygame.image.load("images/personaje/run3.png"),
-        #                        pygame.image.load("images/personaje/run4.png"),
-        #                        pygame.image.load("images/personaje/run5.png"),
-        #                        ]
-        # self.caminarIzquierda = [pygame.image.load("images/personaje/izq1.png"),
-        #                          pygame.image.load(
-        #                              "images/personaje/izq2.png"),
-        #                          pygame.image.load(
-        #                              "images/personaje/izq3.png"),
-        #                          pygame.image.load(
-        #                              "images/personaje/izq4.png"),
-        #                          pygame.image.load(
-        #                              "images/personaje/izq5.png"),
-        #                          ]
-
-        # self.salta = [pygame.image.load("images/personaje/salto1.png"),
-        #                pygame.image.load("images/personaje/salto2.png"),
-        #               pygame.image.load("images/personaje/salto3.png")]
-
+    def __init__(self, pos):
+        super().__init__()
         
+        # MOVIMIENTO
+        self.vel = 10
+        self.gravedad=1.8
+        self.vel_salto=-28
+        
+        # ANIMACIONES
+        self.importar_imagenes_personaje()
+        self.indice_frame = 0
+        self.animacion_vel = 0.15
+        self.status = "quieto"
+        self.mirando_izquierda = False   
+        # Alineamiento de la hitbox
+        self.sobre_el_suelo=False
+        self.sobre_el_techo=False
+        self.sobre_izquierda=False
+        self.sobre_derecha = False
 
-    def move(self,keys=pygame.key.get_pressed()):
-        localX = self.x
+        # SPRITE DEL PERSONAJE
+        #  Y COLISION
+        self.image = self.animaciones["quieto"][self.indice_frame]
+        self.rect = self.image.get_rect(topleft=pos)
 
-        if keys[pygame.K_LEFT] | keys[pygame.K_a]:
-            self.direccion.x = 1
-            self.x = self.x - self.vel
-            self.izquierda = True
-            self.derecha = False
-           
+        self.direccion = pygame.Vector2(0,0)
+        
+    # ANIMACIONES
+    def importar_imagenes_personaje(self):
+        carpeta_ubicacion = "images/personaje/"
+        self.animaciones = {"quieto":[],"run":[],"salto":[]}
+        for animacion in self.animaciones.keys():
+            full_path = carpeta_ubicacion + animacion
+            self.animaciones[animacion] = import_folder(full_path)
 
-        elif keys[pygame.K_RIGHT] | keys[pygame.K_d] :
-            self.direccion.x = -1
-            self.x += self.vel
-            self.izquierda = False
-            self.derecha = True
-           
-
+    def get_status(self):
+        if self.direccion.y < 0 or self.direccion.y > 0:
+            self.status="salto"
         else:
-            self.izquierda = False
-            self.derecha = False
-            self.conteoCaminata = 0
-
-        if not(self.estaSaltando):  # Mientras no salta
-         
-            if keys[pygame.K_SPACE]:
-                self.estaSaltando = True
-
-                self.izquierda = False
-                self.derecha = False
-                self.conteoCaminata = 0
-
-        else:
-            if self.conteoSalto >= -10:
-                self.y -= (self.conteoSalto *abs(self.conteoSalto)) * 0.5
-                self.conteoSalto -= 1
-
+            if self.direccion.x != 0:
+                self.status = "run"
             else:
-                self.conteoSalto = 10
-                self.estaSaltando = False
-        return localX - self.x
+                self.status = "quieto"
+        
+    def animate(self):
+        animacion = self.animaciones[self.status]
+
+        self.indice_frame += self.animacion_vel
+        if self.indice_frame >= len(animacion):
+            self.indice_frame = 0
+
+        image = animacion[int(self.indice_frame)]
+        # VOLTEAR LA IMAGEN
+        if self.mirando_izquierda:
+            imagen_volteada = pygame.transform.flip(image,True,False)
+            self.image = imagen_volteada
+        else:
+            self.image = image
+
+        # CORRECCIONES A LA HITBOX Y ALINEAMIENTO
+
+        if self.sobre_el_suelo and self.sobre_derecha:
+            self.rect = self.image.get_rect(bottomright = self.rect.bottomright)
+        elif self.sobre_el_suelo and self.sobre_izquierda:
+            self.rect = self.image.get_rect(bottomleft = self.rect.bottomleft)
+        elif self.sobre_el_suelo:
+            self.rect = self.image.get_rect(midbottom=self.rect.midbottom)
+        elif self.sobre_el_techo and self.sobre_derecha:
+            self.rect = self.image.get_rect(topright = self.rect.topright)
+        elif self.sobre_el_techo and self.sobre_izquierda:
+            self.rect = self.image.get_rect(topleft = self.rect.topleft)
+        elif self.sobre_el_techo:
+            self.rect = self.image.get_rect(midtop=self.rect.midtop)
+
+    def movimiento(self):
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_RIGHT]:
+            self.direccion.x=1
+            self.mirando_izquierda = False
+            
+        elif keys[pygame.K_LEFT]:
+            self.direccion.x=-1
+            self.mirando_izquierda = True
+            
+        else:
+            self.direccion.x=0
+        if keys[pygame.K_SPACE] and self.sobre_el_suelo:
+            self.saltar()
+
  
-    def draw(self, pantalla):
+    #def draw(self, pantalla):
         # if self.conteoCaminata + 1 >= 5:
         #     self.conteoCaminata = 0
         # if self.izquierda:
@@ -105,12 +110,16 @@ class Jugador(pygame.sprite.Sprite):
         #     self.conteoCaminata += 1
         # else:
         #     pantalla.blit(self.quieto, (int(self.x),int(self.y)))
-        pantalla.blit()
+        # pantalla.blit()
        
     def aplicar_gravedad(self):
         self.direccion.y += self.gravedad
         self.rect.y += self.direccion.y
     
-    def actualizar(self):
-        self.move()
-        self.rect.x += self.direccion.x*self.vel
+    def saltar(self):
+        self.direccion.y = self.vel_salto
+       
+    def update(self):
+        self.movimiento()
+        self.get_status()
+        self.animate()
