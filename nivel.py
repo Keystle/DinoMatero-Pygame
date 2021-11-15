@@ -15,16 +15,26 @@ class Nivel:
 #INSTANCIAMOS JUGADOR
         #self.personaje = Jugador(200, 687, 64, 44)
 
+        # FUENTE PARA CONTADOR DE MUERTES
+
+        self.font = pygame.font.SysFont("Arial", 32)
+
+        # SONIDOS
+        self.coin_sonido = pygame.mixer.Sound("audio/effects/coin.wav")
+        self.coin_sonido.set_volume(0.5)
+
         self.jugadorSprite = pygame.sprite.GroupSingle()
         self.jugador = Jugador((500,0))
         self.jugadorSprite.add(self.jugador)
 
         self.display_superficie = superficie
-        self.suma_desplazada = 0
         self.x_actual=0
         self.desplazamiento_mundo = 0
 
+        self.suma_desplazada = 0
+
         self.monedas = monedaJuego
+        self.contador_muertes = 0
         self.finNivel = False
 
         capa_terreno = importar_csv_plantilla(nivel_data['terreno'])
@@ -127,10 +137,12 @@ class Nivel:
         
         if jugador_x < PANTALLA_ANCHO/4 and direccion_x < 0:
             self.desplazamiento_mundo=8
+            self.suma_desplazada = self.suma_desplazada + self.desplazamiento_mundo
            
             self.jugador.vel=0
         elif jugador_x > PANTALLA_ANCHO - (PANTALLA_ANCHO/2) and direccion_x > 0:
             self.desplazamiento_mundo=-8
+            self.suma_desplazada = self.suma_desplazada + self.desplazamiento_mundo
             
             self.jugador.vel=0
         else:
@@ -183,9 +195,7 @@ class Nivel:
             if monedita.rect.colliderect(self.jugadorSprite.sprite.rect):
                 self.monedas = self.monedas +1
                 self.moneda_sprites.remove(monedita)
-                print(self.monedas)
-                # self.restart_jugador()
-                # self.change_coins.change_coins()
+                self.coin_sonido.play()
 
     def colision_fin_nivel(self):
         for fin_nivel in self.cueva_sprites.sprites():
@@ -196,15 +206,29 @@ class Nivel:
         #     for coin in colisionMoneda:
         #         self.change_coins(coin.value)
   
+    def colision_perdida(self):
+        if self.jugadorSprite.sprite.rect.y > PANTALLA_ALTO:
+            self.restart_jugador()
+
     def restart_jugador(self):
-   
+        self.contador_muertes = self.contador_muertes +1
+        self.desplazamiento_mundo= -self.suma_desplazada
+        self.suma_desplazada = 0
         self.jugadorSprite.sprite.rect.y = 0
         self.jugadorSprite.sprite.rect.x = 500 
         
+    def mostrar_muertes(self):
+        texto = self.font.render(f"CONTADOR DE MUERTES: {self.contador_muertes}", 1, pygame.Color("black"))
+        self.display_superficie.blit(texto,(10,30))
 
+    def mostrar_monedas(self):
+        texto = self.font.render(f"MONEDAS: {self.monedas}", 1, pygame.Color("yellow"))
+        self.display_superficie.blit(texto,(10,60))
+# fdefge
     def run(self):
         #MOVIMIENTO DEL PERSONAJE
         self.desplazamiento_x()
+        self.colision_perdida()
 
 
 #         DECORACION
@@ -246,6 +270,8 @@ class Nivel:
         self.colision_vertical()
         self.colision_monedas()
         self.colision_fin_nivel()
+        self.mostrar_muertes()
+        self.mostrar_monedas()
         self.jugadorSprite.draw(self.display_superficie)
         self.jugadorSprite.update()
     

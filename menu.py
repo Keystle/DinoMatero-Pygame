@@ -15,9 +15,10 @@ BLUE    = (24, 26, 82 )
 
 #Ventana
 pantalla = pygame.display.set_mode((PANTALLA_ANCHO,PANTALLA_ALTO))
-cielo = pygame.image.load('./images/background/fondoUnico.png').convert()
+cielo = pygame.image.load('./images/background/fondoUnicoInicio.png').convert()
 cielo = pygame.transform.scale(cielo, (PANTALLA_ANCHO, PANTALLA_ALTO))
-
+cieloInstrucciones = pygame.image.load('./images/background/fondoUnicoInstrucciones.png').convert()
+cieloInstrucciones = pygame.transform.scale(cieloInstrucciones, (PANTALLA_ANCHO, PANTALLA_ALTO))
 
 #Fuente
 font = pygame.font.SysFont("Source Serif Pro Black", 50)
@@ -30,22 +31,22 @@ def mensaje_en_pantalla(msg, color, txt_x, txt_y):
 def menu():
     #cielo.draw(self.display_superficie,self.desplazamiento_mundo)
     pantalla.blit(cielo,(0, 0))
-    mensaje_en_pantalla("JAMPING", RED, 150, 110)
+    """ mensaje_en_pantalla("JAMPING", RED, 150, 110)
     mensaje_en_pantalla("1. Jugar", WHITE, 180, 200)
     mensaje_en_pantalla("2. Instrucciones", WHITE, 180, 250)
-    mensaje_en_pantalla("3. Salir", WHITE, 180, 300)
+    mensaje_en_pantalla("3. Salir", WHITE, 180, 300) """
     pygame.display.update()
 
 def instrucciones():
-    pantalla.fill(GREEN)
-    mensaje_en_pantalla("Use las flachas izquierda y ", WHITE, 20, 220)
+    pantalla.blit(cieloInstrucciones,(0, 0))
+    """ mensaje_en_pantalla("Use las flachas izquierda y ", WHITE, 20, 220)
     mensaje_en_pantalla("derecha o A y D para moverse, ", WHITE, 20, 270)
     mensaje_en_pantalla("para saltar use la tecla SPACE", WHITE, 20, 320)
     mensaje_en_pantalla("", WHITE, 20, 370)
-    mensaje_en_pantalla("", WHITE, 20, 420)
+    mensaje_en_pantalla("", WHITE, 20, 420) """
     pygame.display.update()
   
-    time.sleep(5)
+    time.sleep(1)
 
 
 ##################################################

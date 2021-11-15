@@ -4,7 +4,11 @@ from soporte import import_folder
 class Jugador(pygame.sprite.Sprite):
     def __init__(self, pos):
         super().__init__()
+
+        # SONIDOS
+        self.salto_sonido = pygame.mixer.Sound("audio/effects/jump.wav")
         
+        self.salto_sonido.set_volume(0.5)
         # MOVIMIENTO
         self.vel = 10
         self.gravedad=1.8
@@ -82,15 +86,24 @@ class Jugador(pygame.sprite.Sprite):
         if keys[pygame.K_RIGHT]:
             self.direccion.x=1
             self.mirando_izquierda = False
-            
+        
+        elif keys[pygame.K_d]:
+            self.direccion.x=1
+            self.mirando_izquierda = False
+
         elif keys[pygame.K_LEFT]:
             self.direccion.x=-1
             self.mirando_izquierda = True
-            
+        
+        elif keys[pygame.K_a]:
+            self.direccion.x=-1
+            self.mirando_izquierda = True
+
         else:
             self.direccion.x=0
         if keys[pygame.K_SPACE] and self.sobre_el_suelo:
             self.saltar()
+            self.salto_sonido.play()
 
  
     #def draw(self, pantalla):

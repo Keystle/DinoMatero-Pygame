@@ -16,6 +16,11 @@ pygame.init()
 
 class Main:
     def __init__(self):
+        # MUSICA
+        self.musica_fondo = pygame.mixer.Sound("audio/overworld_music.wav")
+        self.musica_fondo.set_volume(0.2)
+        self.musica_fondo.play(-1)
+
         self.opcionMenu = -1
         self.monedas=0
         self.corriendo_juego = True
@@ -92,10 +97,17 @@ class Main:
             self.dibujar()
             if(self.nivelActual.finNivel):
                 self.monedas = self.nivelActual.monedas
-
                 self.numeroNivelActual = self.numeroNivelActual+1
-
+                """ if self.numeroNivelActual == 3:
+                    self.numeroNivelActual = 0
+                    for i in range(len(self.niveles)):
+                        self.niveles_juegos.(Nivel(self.niveles[i],self.pantalla, self.monedas))
+                        self.niveles_juegos.append(Nivel(self.niveles[i],self.pantalla, self.monedas))
+                    Main()
+                elif self.numeroNivelActual != 3: """
                 self.nivelActual =self.niveles_juegos[self.numeroNivelActual]
+                self.nivelActual.monedas=self.monedas
+                
 
             pygame.display.update()
             self.reloj.tick(30)
