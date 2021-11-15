@@ -41,7 +41,7 @@ class Main:
 
     def crearPantalla(self):
         self.pantalla = pygame.display.set_mode((PANTALLA_ANCHO, PANTALLA_ALTO))
-        pygame.display.set_caption('Jumping')
+        pygame.display.set_caption('DinoMatero')
 
     def crearFps(self):
         self.reloj = pygame.time.Clock()
