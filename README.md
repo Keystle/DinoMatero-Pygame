@@ -1,7 +1,7 @@
 # pygame
 
-Juego plataforma con estilo del mario bros original de family, donde el piso se mueve con el personaje y despues no podes volver para atras y el personaje tiene que evitar obstaculos
+Juego plataforma 2D donde el piso se mueve con el personaje y el personaje tiene que evitar y saltar obstaculos
 
-Hacer menú, 2 o 3 niveles creditos y opcion para prender y apagar la musica
+Tiene un contador de muertes, de monedas, un menú y tres niveles completamente jugables. 
 
-Instructivo de los controles y mostrar puntajes
+Está hecho en python con la libreria pygame
